@@ -25,7 +25,7 @@ class NMie: # Defines a new class called NMie that is the main class for all EM 
         self.diameters = kwargs.get( 'diameters' )
         self.refind    = np.transpose( kwargs.get( 'refind' ) )  # refractive indices for the shells. It must have r+1 entries for all the shells + host medium
         self.wl        = kwargs.get( 'wl' ) 
-        self.numshells = self.diameters.size
+        self.numshells = np.size(self.diameters)
 
         # pre allocation of variables
         self.x         = np.zeros( ( self.wl.size , self.numshells ) ) * 1j
@@ -143,7 +143,7 @@ class NMie: # Defines a new class called NMie that is the main class for all EM 
             
             an = self.__an( n )
             bn = self.__bn( n )
-            k = 2 * np.pi * self.refind[ : , -1 ] / self.wl
+            k = 2 * np.pi * np.real(self.refind[ : , -1 ]) / self.wl
             
             self.qsca_el[ : , n ] =  ( 2 * np.pi / ( ( k )**2 ) * ( 2 * n + 1 ) ) * np.abs( an )**2
             self.qsca_ma[ : , n ] =  ( 2 * np.pi / ( ( k )**2 ) * ( 2 * n + 1 ) ) * np.abs( bn )**2
