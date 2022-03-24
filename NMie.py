@@ -42,11 +42,12 @@ class NMie: # Defines a new class called NMie that is the main class for all EM 
         self.an        = np.zeros( ( self.wl.size ) ) * 1j
         self.bn        = np.zeros( ( self.wl.size ) ) * 1j
 
-        self.qsca_el   = np.zeros( ( self.wl.size , self.nummodes ) ) * 1j
-        self.qsca_ma   = np.zeros( ( self.wl.size , self.nummodes ) ) * 1j
-        
-        self.qext_el   = np.zeros( ( self.wl.size , self.nummodes ) ) * 1j
-        self.qext_ma   = np.zeros( ( self.wl.size , self.nummodes ) ) * 1j
+        self.qsca_el   = np.zeros( ( self.wl.size , self.nummodes ) )
+        self.qsca_ma   = np.zeros( ( self.wl.size , self.nummodes ) )
+        self.qabs_el   = np.zeros( ( self.wl.size , self.nummodes ) )
+        self.qabs_ma   = np.zeros( ( self.wl.size , self.nummodes ) )        
+        self.qext_el   = np.zeros( ( self.wl.size , self.nummodes ) )
+        self.qext_ma   = np.zeros( ( self.wl.size , self.nummodes ) )
         
         self.qsca      = np.zeros( ( self.wl.size ) )
         self.qext      = np.zeros( ( self.wl.size ) )
@@ -150,14 +151,16 @@ class NMie: # Defines a new class called NMie that is the main class for all EM 
        
             self.qext_el[ : , n ] =  ( 2 * np.pi / ( ( k )**2 ) * ( 2 * n + 1 ) ) * np.real( an )
             self.qext_ma[ : , n ] =  ( 2 * np.pi / ( ( k )**2 ) * ( 2 * n + 1 ) ) * np.real( bn )
-
             
+            self.qabs_el[ : , n ] =  self.qext_el[:,n] - self.qsca_el[:,n]
+            self.qabs_ma[ : , n ] =  self.qext_ma[:,n] - self.qsca_ma[:,n]
+            
+                        
         self.qsca = np.sum( self.qsca_el , 1 ) + np.sum( self.qsca_ma , 1 )
         self.qext = np.sum( self.qext_el , 1 ) + np.sum( self.qext_ma , 1 )
         self.qabs = self.qext - self.qsca
     
 # Define the special functions needed for calculation of eigenmodes of the Core-Shell spheroid
-      
     def __Psi( self , z , n ):
         return z * self.__Jspher( n , z )
     
